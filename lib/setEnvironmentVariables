@@ -1,0 +1,30 @@
+#!/bin/bash
+
+customVagrant[lib_path]="${customVagrant[path]}/lib"
+customVagrant[template]="${customVagrant[lib_path]}/execFileTemplate"
+customVagrant[config_path]="${customVagrant[path]}/config"
+customVagrant[config_file]="${customVagrant[path]}/config/vagrant-machines"
+customVagrant[temp_config_file]="${customVagrant[path]}/config/vagrant-machines.tmp"
+customVagrant[repository_path]="https://raw.githubusercontent.com/MartinSIbarra/vagrant-customs/main/"
+
+# Requests
+customVagrant[parameter]="cv"
+customVagrant[list_request]="list"
+customVagrant[list_script]="${customVagrant[lib_path]}/listMachines"
+customVagrant[add_request]="add"
+customVagrant[add_script]="${customVagrant[lib_path]}/addMachine"
+customVagrant[remove_request]="remove"
+customVagrant[remove_script]="${customVagrant[lib_path]}/removeMachine"
+customVagrant[install_request]="install"
+customVagrant[install_script]="${customVagrant[lib_path]}/install"
+customVagrant[uninstall_request]="uninstall"
+customVagrant[uninstall_script]="${customVagrant[lib_path]}/uninstall"
+
+# Actions
+customVagrant[load_config]="${customVagrant[lib_path]}/loadConfig"
+customVagrant[create_exec_file]="${customVagrant[lib_path]}/createExecFile"
+
+# Machine Config
+unset customVagrantConfig
+declare -A customVagrantConfig
+. ${customVagrant[load_config]}

@@ -1,0 +1,17 @@
+#!/bin/bash
+[ $custom_vagrant_log = true ] && echo "listMachines: start" 
+[ $custom_vagrant_log = true ] && echo "listMachines: ConfigCount - ${#customVagrantConfig[@]}" 
+
+if [ ${#customVagrantConfig[@]} -gt 0 ] ; then
+  echo ""
+  for key in ${!customVagrantConfig[@]} ; do
+    echo "$key --> ${customVagrantConfig[$key]}"
+  done
+  echo ""
+else
+  echo ""
+  echo "Nothing to list, to add a new VM use 'vagrant cv add [machine_name]'."
+  echo ""
+fi
+
+[ $custom_vagrant_log = true ] && echo "listMachines: end" 

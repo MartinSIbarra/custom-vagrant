@@ -1,0 +1,13 @@
+#!/bin/batch
+[ $custom_vagrant_log = true ] && echo "loadConfig: loadConfig - start" 
+
+[ $custom_vagrant_log = true ] && echo "loadConfig: Config file - ${customVagrant[config_file]}" 
+if ls ${customVagrant[config_file]} > /dev/null 2>&1 ; then
+  for line in $(cat ${customVagrant[config_file]}) ; do
+    IFS='=' read -ra fields <<< $line
+    customVagrantConfig[${fields[0]}]=${fields[1]}
+  done
+fi
+[ $custom_vagrant_log = true ] && echo "loadConfig: Config - ${customVagrantConfig[@]}" 
+
+[ $custom_vagrant_log = true ] && echo "loadConfig: loadConfig - end" 

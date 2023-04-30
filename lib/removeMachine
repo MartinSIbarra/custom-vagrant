@@ -1,0 +1,66 @@
+#!/bin/bash
+[ $custom_vagrant_log = true ] && echo "removeMachine: start"
+
+customVagrant[machine]=$1
+customVagrant[current_path]=$(pwd -P)
+customVagrant[machine_path]="${customVagrant[current_path]}/${customVagrant[machine]}"
+customVagrant[machine_exec_file]="$HOME/bin/${customVagrant[machine]}"
+
+validateMachineName () {
+  [ $custom_vagrant_log = true ] && echo "removeMachine: validateMachineName - start" 
+  [ $custom_vagrant_log = true ] && echo "removeMachine: machine - ${customVagrant[machine]}" 
+  if [ "${customVagrant[machine]}" = "" ] ; then
+    ERROR=true
+    echo ""
+    echo "The machine name param must be present to use 'remove' command, example: 'vagrant cv remove [machine name]'"
+    echo ""
+  fi
+  [ $custom_vagrant_log = true ] && echo "removeMachine: ERROR - $ERROR" 
+  [ $custom_vagrant_log = true ] && echo "removeMachine: validateMachineName - end" 
+}
+
+loadMachineConfig () {
+  [ $custom_vagrant_log = true ] && echo "removeMachine: loadMachineConfig - start" 
+  [ $custom_vagrant_log = true ] && echo "removeMachine: Config - ${customVagrantConfig[@]}" 
+  if [ ! ${customVagrantConfig[${customVagrant[machine]}]+_} ] ; then
+    ERROR=true
+    echo ""
+    echo "No config file found at '${customVagrant[config_file]}' for machine '${customVagrant[machine]}'"
+    echo ""
+  fi
+  [ $custom_vagrant_log = true ] && echo "removeMachine: ERROR - $ERROR" 
+  [ $custom_vagrant_log = true ] && echo "removeMachine: loadMachineConfig - end" 
+}
+
+removeMachine () {
+  [ $custom_vagrant_log = true ] && echo "removeMachine: removeMachine - start" 
+  [ $custom_vagrant_log = true ] && echo "removeMachine: machine - ${customVagrant[machine]}" 
+  [ $custom_vagrant_log = true ] && echo "removeMachine: Config - ${customVagrantConfig[@]}" 
+  echo ""
+  echo " > Removing exec file '${customVagrant[machine_exec_file]}'..."
+  rm ${customVagrant[machine_exec_file]} > /dev/null 2>&1
+  echo " > Done"
+  echo " > Removing directory '${customVagrantConfig[${customVagrant[machine]}]}'..."
+  rm -rf "${customVagrantConfig[${customVagrant[machine]}]}" > /dev/null 2>&1
+  echo " > Done"
+  echo " > Removing machine config for '${customVagrant[machine]}' at '${customVagrant[config_file]}'..."
+  rm ${customVagrant[temp_config_file]} > /dev/null 2>&1
+  mv "${customVagrant[config_file]}" "${customVagrant[temp_config_file]}"
+  unset customVagrantConfig[${customVagrant[machine]}]
+  for key in "${!customVagrantConfig[@]}" ; do
+    [ $custom_vagrant_log = true ] && echo "removeMachine: Pair - $key=${customVagrantConfig[$key]}" 
+    echo "$key=${customVagrantConfig[$key]}" >> ${customVagrant[config_file]}
+  done
+  rm ${customVagrant[temp_config_file]} > /dev/null 2>&1
+  echo " > Done"
+  echo ""
+  [ $custom_vagrant_log = true ] && echo "removeMachine: removeMachine - end" 
+}
+
+# Main
+ERROR=false
+validateMachineName
+[ $ERROR = false ] && loadMachineConfig
+[ $ERROR = false ] && removeMachine
+
+[ $custom_vagrant_log = true ] && echo "removeMachine: end" 

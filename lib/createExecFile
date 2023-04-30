@@ -1,0 +1,10 @@
+#!/bin/bash
+[ $custom_vagrant_log = true ] && echo "createExecFile: start" 
+echo "#!/bin/bash" >> ${customVagrant[machine_exec_file]}
+echo "echo \"The Vagrantfile of this VM is placed in: '${customVagrant[machine_path]}'\"" >> ${customVagrant[machine_exec_file]}
+echo "CURRENT_PATH=\$(pwd -P)" >> ${customVagrant[machine_exec_file]}
+echo "cd ${customVagrant[machine_path]}" >> ${customVagrant[machine_exec_file]}
+echo "/usr/bin/vagrant \$@" >> ${customVagrant[machine_exec_file]}
+echo "cd \$CURRENT_PATH" >> ${customVagrant[machine_exec_file]}
+chmod +x ${customVagrant[machine_exec_file]}
+[ $custom_vagrant_log = true ] && echo "createExecFile: end" 

@@ -1,0 +1,79 @@
+#!/bin/bash
+[ $custom_vagrant_log = true ] && echo "custrom-vagrant: start" 
+
+unset customVagrant
+declare -A customVagrant
+customVagrant[path]="$HOME/.custom-vagrant"
+[ $custom_vagrant_env = "dev" ] && customVagrant[path]=$(pwd -P)
+[ $custom_vagrant_log = true ] && echo "custrom-vagrant: Env - $custom_vagrant_env" 
+customVagrant[request]=$2
+customVagrant[machine]=$3
+
+. ${customVagrant[path]}/lib/setEnvironmentVariables
+
+runCustomVagrant () {
+  case ${customVagrant[request]} in
+    ${customVagrant[list_request]})
+      . ${customVagrant[list_script]}
+      ;;
+    ${customVagrant[add_request]})
+      . ${customVagrant[add_script]} ${customVagrant[machine]}
+      ;;
+    ${customVagrant[remove_request]})
+      . ${customVagrant[remove_script]} ${customVagrant[machine]}
+      ;;
+    ${customVagrant[install_request]})
+      . ${customVagrant[install_script]}
+      source $HOME/.bashrc
+      ;;
+    ${customVagrant[uninstall_request]})
+      echo ""
+      echo "This action will remove permanently:"
+      echo " - all the custom vagrant bin files (vagrant and machine execs) from '$BIN_PATH'"
+      echo " - the custom vagrant config file and path from '${customVagrant[config_file]}'"
+      echo ""
+      echo -n "Are you sure to continue? (yes/no): "
+      response=""
+      while [[ $response != "yes" &&  $response != "no" ]]; do
+        read response
+      done
+      if [ "$response" = "yes" ] ; then
+        . ${customVagrant[uninstall_script]}
+        source $HOME/.bashrc
+      fi
+      ;;
+    *)
+      echo ""
+      echo "Invalid parameters use 'vagrant --help' for help"
+      echo ""
+      ;;
+  esac
+}
+
+listHelp () {
+  /usr/bin/vagrant $@
+  if [ "$1" = "" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "Aditional custom commands are avaiable, this are ment to manage vagrant vms from any path, using:"
+    echo " - a custom exec file added into your '$HOME/bin' folder"
+    echo " - a custom path folder added into the current path"
+    echo " - a custom config added into '${customVagrant[config_file]}' file"
+    echo "To use them must add '${customVagrant[parameter]}' parameter" followed of a command.
+    echo ""
+    echo "Usage: vagrant ${customVagrant[parameter]} <command> <arg>"
+    echo "     "
+    echo "   list                    Show a list of customs vagrants machines and paths configs"
+    echo "   add <machine_name>      Adds a new machine path, exec file and config to custom vagrant"
+    echo "   remove <machine_name>   Removes a specific machine path, exec file and config from custom vagrant"
+    echo "   uninstall               This command uninstalls the custom vagrant wrapper"
+    echo ""
+  fi
+}
+
+# Main
+if [ "$1" = "${customVagrant[parameter]}" ] ; then
+  runCustomVagrant
+else
+  listHelp $@
+fi
+
+[ $custom_vagrant_log = true ] && echo "custrom-vagrant: end"

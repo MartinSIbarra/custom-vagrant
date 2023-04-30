@@ -1,0 +1,95 @@
+#!/bin/bash
+[ $custom_vagrant_log = true ] && echo "addMachine: start" 
+
+customVagrant[machine]=$1
+customVagrant[current_path]=$(pwd -P)
+customVagrant[machine_path]="${customVagrant[current_path]}/${customVagrant[machine]}"
+customVagrant[machine_exec_file]="$HOME/bin/${customVagrant[machine]}"
+
+validateMachineName () {
+  [ $custom_vagrant_log = true ] && echo "addMachine: validateMachineName - start" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: machine - ${customVagrant[machine]}" 
+  if [ "${customVagrant[machine]}" = "" ] ; then
+    ERROR=true
+    echo ""
+    echo "The machine name param must be present to use 'add' command, example: 'vagrant cv add [machine name]'"
+    echo ""
+  fi
+  [ $custom_vagrant_log = true ] && echo "addMachine: ERROR - $ERROR" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: validateMachineName - end" 
+}
+
+checkExecFileAvailability () {
+  [ $custom_vagrant_log = true ] && echo "addMachine: checkExecFileAvailability - start" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: machine_exec_file - ${customVagrant[machine_exec_file]}" 
+  if ls ${customVagrant[machine_exec_file]} > /dev/null 2>&1 ; then
+    ERROR=true
+    echo ""
+    echo "The custom exec file '${customVagrant[machine_exec_file]}' already exists."
+    echo "Try using another VM name, the exec file to run your Vagrant VM will take this name!"
+    echo ""
+  fi
+  [ $custom_vagrant_log = true ] && echo "addMachine: ERROR - $ERROR" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: checkExecFileAvailability - end" 
+}
+
+checkMachinePathAvailability () {
+  [ $custom_vagrant_log = true ] && echo "addMachine: checkMachinePathAvailability - start" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: machine_path - ${customVagrant[machine_path]}" 
+  if ls ${customVagrant[machine_path]} > /dev/null 2>&1 ; then
+    ERROR=true
+    echo ""
+    echo "The path '${customVagrant[machine_path]}' already exists."
+    echo "Try using another VM name, the Machine path to contain the Vagrantfile will take this name!"
+    echo ""
+  fi
+  [ $custom_vagrant_log = true ] && echo "addMachine: ERROR - $ERROR" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: checkMachinePathAvailability - end" 
+}
+
+checkMachineNameAvailability () {
+  [ $custom_vagrant_log = true ] && echo "addMachine: checkMachineNameAvailability - start" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: Config - ${customVagrantConfig[@]}" 
+  if [ ${customVagrantConfig[${customVagrant[machine]}]+_} ] ; then
+    ERROR=true
+    echo ""
+    echo "The config for VM '${customVagrant[machine]}' already exists."
+    echo "Try using another VM name, the config to run your Vagrant VM will take this name!"
+    echo ""
+  fi
+  [ $custom_vagrant_log = true ] && echo "addMachine: ERROR - $ERROR" 
+  [ $custom_vagrant_log = true ] && echo "addMachine: checkMachineNameAvailability - end" 
+}
+
+addMachine () {
+  [ $custom_vagrant_log = true ] && echo "addMachine: addMachine - start" 
+  echo ""
+  echo "This is just a wrapper for vagrant command to allow you to run this VM form any directory"
+  echo " > Creating VM folder '${customVagrant[machine_path]}'..."
+  mkdir ${customVagrant[machine]}
+  echo " > Done"
+  echo ""
+  echo " > Creating exec file '${customVagrant[machine_exec_file]}'..."
+  . ${customVagrant[create_exec_file]}
+  echo " > Done"
+  echo ""
+  echo " > Adding VM '${customVagrant[machine]}' asociation to path '${customVagrant[machine_path]}' into config file '${customVagrant[config_file]}'..."
+  mkdir ${customVagrant[config_path]}
+  echo "${customVagrant[machine]}=${customVagrant[machine_path]}" >> ${customVagrant[config_file]}
+  echo " > Done"
+  echo ""
+  echo "Now you can use your Vagrant VM '${customVagrant[machine]}' from anywhere by using '${customVagrant[machine]} [vagrant command]'... :D"
+  echo ""
+  [ $custom_vagrant_log = true ] && echo "addMachine: addMachine - end" 
+}
+
+# Main
+
+ERROR=false
+validateMachineName
+[ $ERROR = false ] && checkExecFileAvailability
+[ $ERROR = false ] && checkMachinePathAvailability
+[ $ERROR = false ] && checkMachineNameAvailability
+[ $ERROR = false ] && addMachine
+
+[ $custom_vagrant_log = true ] && echo "addMachine: end" 
