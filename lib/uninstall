@@ -1,0 +1,20 @@
+#!/bin/bash
+BIN_PATH="$HOME/bin"
+CUSTOM_VAGRANT="$BIN_PATH/vagrant"
+
+echo " > Removing custom vagrant file from '$BIN_PATH'..."
+rm $CUSTOM_VAGRANT > /dev/null 2>&1
+echo " > Done"
+echo " > Removing custom vagrant machine exec files from '$BIN_PATH'..."
+if ls $CONFIG_FILE > /dev/null 2>&1 ; then
+  for key in ${!customVagrantConfig[@]}; do
+    rm "$BIN_PATH/$key" > /dev/null 2>&1fi
+  done
+fi
+echo " > Done"
+echo " > Removing custom vagrant folder '${customVagrant[path]}'..."
+rm -rf ${customVagrant[path]} > /dev/null 2>&1
+echo " > Done"
+echo ""
+echo "Custom Vagrant has been succesfully uninstalled."
+echo ""

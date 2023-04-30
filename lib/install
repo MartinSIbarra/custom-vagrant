@@ -11,12 +11,13 @@ else
   chmod +x $CUSTOM_VAGRANT
   mkdir "$HOME/.custom-vagrant" > /dev/null 2>&1
   mkdir "$HOME/.custom-vagrant/lib" > /dev/null 2>&1
+  wget -q "$REMOTE_REPO/lib/setEnvironmentVariables" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/loadConfig" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/listMachines" -P "$HOME/.custom-vagrant/lib/"
   wget -q "$REMOTE_REPO/lib/addMachine" -P "$HOME/.custom-vagrant/lib/"
   wget -q "$REMOTE_REPO/lib/createExecFile" -P "$HOME/.custom-vagrant/lib/"
-  wget -q "$REMOTE_REPO/lib/listMachines" -P "$HOME/.custom-vagrant/lib/"
-  wget -q "$REMOTE_REPO/lib/loadConfig" -P "$HOME/.custom-vagrant/lib/"
   wget -q "$REMOTE_REPO/lib/removeMachine" -P "$HOME/.custom-vagrant/lib/"
-  wget -q "$REMOTE_REPO/lib/setEnvironmentVariables" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/uninstall" -P "$HOME/.custom-vagrant/lib/"
   chmod +x $HOME/.custom-vagrant/lib/*
   echo ""
   echo "Custom Vagrant succesfully installed. Enjoy!"
