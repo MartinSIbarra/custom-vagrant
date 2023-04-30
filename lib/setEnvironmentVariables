@@ -15,8 +15,6 @@ customVagrant[add_request]="add"
 customVagrant[add_script]="${customVagrant[lib_path]}/addMachine"
 customVagrant[remove_request]="remove"
 customVagrant[remove_script]="${customVagrant[lib_path]}/removeMachine"
-customVagrant[install_request]="install"
-customVagrant[install_script]="${customVagrant[lib_path]}/install"
 customVagrant[uninstall_request]="uninstall"
 customVagrant[uninstall_script]="${customVagrant[lib_path]}/uninstall"
 

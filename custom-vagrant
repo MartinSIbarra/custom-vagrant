@@ -25,10 +25,6 @@ runCustomVagrant () {
     ${customVagrant[remove_request]})
       . ${customVagrant[remove_script]} ${customVagrant[machine]}
       ;;
-    ${customVagrant[install_request]})
-      . ${customVagrant[install_script]}
-      source $HOME/.bashrc
-      ;;
     ${customVagrant[uninstall_request]})
       echo ""
       echo "This action will remove permanently:"
