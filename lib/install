@@ -1,0 +1,24 @@
+#!/bin/bash
+CUSTOM_VAGRANT="$HOME/bin/vagrant"
+REMOTE_REPO="https://raw.githubusercontent.com/MartinSIbarra/custom-vagrant/main"
+
+if ls $CUSTOM_VAGRANT > /dev/null 2>&1 ; then
+  echo ""
+  echo "Custom Vagrant can't be installed, '$CUSTOM_VAGRANT' already exists."
+  echo ""
+else
+  wget -q "$REMOTE_REPO/custom-vagrant" -O $CUSTOM_VAGRANT
+  chmod +x $CUSTOM_VAGRANT
+  mkdir "$HOME/.custom-vagrant" > /dev/null 2>&1
+  mkdir "$HOME/.custom-vagrant/lib" > /dev/null 2>&1
+  wget -q "$REMOTE_REPO/lib/addMachine" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/createExecFile" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/listMachines" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/loadConfig" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/removeMachine" -P "$HOME/.custom-vagrant/lib/"
+  wget -q "$REMOTE_REPO/lib/setEnvironmentVariables" -P "$HOME/.custom-vagrant/lib/"
+  chmod +x $HOME/.custom-vagrant/lib/*
+  echo ""
+  echo "Custom Vagrant succesfully installed. Enjoy!"
+  echo ""
+fi
