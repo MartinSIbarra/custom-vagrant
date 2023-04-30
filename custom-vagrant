@@ -1,11 +1,14 @@
 #!/bin/bash
+[ -z "$custom_vagrant_log" ] && custom_vagrant_log=false
+[ -z "$custom_vagrant_env" ] && custom_vagrant_env="prod"
+[ $custom_vagrant_log = true ] && echo "custrom-vagrant: Env - $custom_vagrant_env" 
+
 [ $custom_vagrant_log = true ] && echo "custrom-vagrant: start" 
 
 unset customVagrant
 declare -A customVagrant
 customVagrant[path]="$HOME/.custom-vagrant"
 [ $custom_vagrant_env = "dev" ] && customVagrant[path]=$(pwd -P)
-[ $custom_vagrant_log = true ] && echo "custrom-vagrant: Env - $custom_vagrant_env" 
 customVagrant[request]=$2
 customVagrant[machine]=$3
 
